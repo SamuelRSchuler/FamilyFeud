@@ -36,7 +36,7 @@
     $('strikes').setAttribute('aria-label', `${strikes} of 3 strikes`);
     $('wrong').disabled = strikes >= 3 || award !== null;
     $('status').textContent = award ? 'Round awarded. Reveal remaining answers or start the next question.' : strikes >= 3 ? 'Three strikes! Score is locked. Reveal the remaining answers or start a new round.' :
-      revealed.size === questions[current].answers.length ? 'All answers revealed! Ready for the next question?' : 'Click a card to reveal an answer.';
+      revealed.size === questions[current].answers.length ? 'All answers revealed! Ready for the next question?' : '';
   }
   function loadRound(index) {
     current = index;
@@ -93,7 +93,7 @@
     update();
     $('overlay-xs').textContent = Array(strikes).fill('✕').join(' ');
     $('strike-title').textContent = strikes === 3 ? 'THREE STRIKES — ROUND OVER' : 'WRONG ANSWER';
-    $('overlay-message').textContent = strikes === 3 ? 'Score locked. Click to view the board.' : 'Click to return to the board';
+    $('overlay-message').textContent = strikes === 3 ? 'Score locked. Click to view the board.' : '';
     $('strike-overlay').showModal();
   });
   $('dismiss-strikes').addEventListener('click', () => $('strike-overlay').close());

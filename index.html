@@ -9,7 +9,7 @@
 <script src="game.js" defer></script>
 </head>
 <body>
-<header><span class="eyebrow">LET’S PLAY</span><h1>Family <em>Feud</em></h1><p>Survey says…</p></header>
+<header><h1>Family <em>Feud</em></h1></header>
 <main>
 <section class="teams" aria-label="Team scores">
 <div class="team-panel" id="team-panel-0"><span class="label">TEAM 1</span><strong id="team-score-0" aria-live="polite">0</strong><button id="play-0" aria-pressed="true">Playing this round</button></div>
@@ -20,7 +20,7 @@
 <div class="score"><span class="label">ROUND POINTS</span><strong id="score" aria-live="polite">0</strong></div>
 <div><span class="label">STRIKES</span><strong id="strikes" aria-label="0 of 3 strikes">— — —</strong></div>
 </section>
-<section class="question-panel"><span class="eyebrow">NAME SOMETHING…</span><h2 id="question"></h2><p id="status" aria-live="polite">Click a card to reveal an answer.</p></section>
+<section class="question-panel"><h2 id="question"></h2><p id="status" aria-live="polite"></p></section>
 <section id="board" class="board" aria-label="Survey answers"></section>
 <section class="award-panel" aria-label="Award round points">
 <p id="award-status" aria-live="polite">Select the team playing, then award the round points to the winner.</p>
@@ -31,7 +31,6 @@
 <details><summary>Choose a question</summary><label for="question-select">Jump to round</label><select id="question-select"></select></details>
 <p id="error" role="alert" hidden></p>
 </main>
-<footer>GAME NIGHT EDITION <span>•</span> Reveal the board. Rack up the points.</footer>
-<dialog id="strike-overlay" aria-labelledby="strike-title"><button id="dismiss-strikes" class="overlay-content"><span id="strike-title" class="eyebrow">WRONG ANSWER</span><span id="overlay-xs" class="big-xs"></span><span id="overlay-message">Click anywhere here to continue</span></button></dialog>
+<dialog id="strike-overlay" aria-labelledby="strike-title"><button id="dismiss-strikes" class="overlay-content"><span id="strike-title" class="eyebrow">WRONG ANSWER</span><span id="overlay-xs" class="big-xs"></span><span id="overlay-message"></span></button></dialog>
 </body>
 </html>
