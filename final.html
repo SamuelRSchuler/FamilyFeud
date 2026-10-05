@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Family Feud - Final Round (2 Player)</title>
+<style>
+  body {
+    background: radial-gradient(circle at top, #111 0%, #000 100%);
+    color: white;
+    font-family: 'Arial Black', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    padding-top: 20px;
+    color: gold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #ff0;
+  }
+
+  #totalPoints {
+    font-size: 40px;
+    color: #00ffcc;
+    margin-top: 10px;
+    text-shadow: 0 0 8px #0ff;
+  }
+
+  #board {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px auto;
+    max-width: 1200px;
+  }
+
+  .player {
+    flex: 1;
+    max-width: 500px;
+  }
+
+  .player h2 {
+    color: #ffcc00;
+    text-shadow: 0 0 8px #ff0;
+    margin-bottom: 10px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    align-items: center;
+    background: #0033cc;
+    border: 4px solid #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px 0;
+    font-size: 26px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .row.revealed-answer {
+    background: #0077ff;
+  }
+
+  .row.revealed-points {
+    background: gold;
+    color: black;
+    font-weight: bold;
+  }
+
+  .answer {
+    text-align: left;
+  }
+
+  .points {
+    text-align: right;
+    font-size: 28px;
+  }
+
+  #controls {
+    margin-top: 30px;
+  }
+
+  button {
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: darkred;
+  }
+
+  #instructions {
+    font-size: 18px;
+    color: #ccc;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<h1>FINAL ROUND</h1>
+<div id="totalPoints">Total: 0</div>
+<div id="instructions">Click once to reveal the answer, again to reveal the points.</div>
+
+<div id="board">
+  <div class="player" id="player1">
+    <h2>Player 1</h2>
+  </div>
+  <div class="player" id="player2">
+    <h2>Player 2</h2>
+  </div>
+</div>
+
+<script>
+  // Example answers for each player
+  const player1Answers = [
+    { answer: "Food", points: 42 },
+    { answer: "Dishes", points: 38 },
+    { answer: "Blood", points: 49 },
+    { answer: "Library", points: 37 },
+    { answer: "Banana", points: 45 }
+  ];
+
+  const player2Answers = [
+    { answer: "Drinks", points: 35 },
+    { answer: "Laundry", points: 30 },
+    { answer: "Garlic", points: 40 },
+    { answer: "Church", points: 32 },
+    { answer: "Lemon", points: 28 }
+  ];
+
+  let total = 0;
+  const totalDisplay = document.getElementById("totalPoints");
+  const p1Container = document.getElementById("player1");
+  const p2Container = document.getElementById("player2");
+
+  function renderPlayer(container, answers, prefix) {
+    // remove old rows but keep header
+    container.querySelectorAll(".row").forEach(el => el.remove());
+
+    answers.forEach((item, i) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.dataset.state = "hidden"; // hidden → answer → points
+      row.dataset.answer = item.answer;
+      row.dataset.points = item.points;
+      row.dataset.prefix = prefix;
+
+      row.innerHTML = `
+        <div class="answer">---</div>
+        <div class="points">---</div>
+      `;
+
+      row.onclick = () => advanceReveal(row);
+      container.appendChild(row);
+    });
+  }
+
+  function advanceReveal(row) {
+    const state = row.dataset.state;
+    if (state === "hidden") {
+      row.querySelector(".answer").textContent = row.dataset.answer;
+      row.dataset.state = "answer";
+      row.classList.add("revealed-answer");
+    } else if (state === "answer") {
+      row.querySelector(".points").textContent = row.dataset.points;
+      row.dataset.state = "points";
+      row.classList.remove("revealed-answer");
+      row.classList.add("revealed-points");
+      total += Number(row.dataset.points);
+      updateTotal();
+    }
+  }
+
+  function renderBoard() {
+    total = 0;
+    updateTotal();
+    renderPlayer(p1Container, player1Answers, "p1");
+    renderPlayer(p2Container, player2Answers, "p2");
+  }
+
+
+  function updateTotal() {
+    totalDisplay.textContent = `Total: ${total}`;
+  }
+
+  // Initialize
+  renderBoard();
+</script>
+</body>
+</html>

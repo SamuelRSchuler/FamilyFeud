@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Family Feud Scoreboard</title>
+<style>
+  body {
+    background: radial-gradient(circle at top, #111 0%, #000 100%);
+    color: white;
+    font-family: 'Arial Black', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    padding-top: 20px;
+    color: gold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #ff0;
+  }
+
+  #scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 50px;
+  }
+
+  .team {
+    background: #0033cc;
+    border: 4px solid white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 300px;
+    box-shadow: 0 0 20px #000;
+  }
+
+  .team h2 {
+    color: #ffcc00;
+    margin-bottom: 20px;
+    text-shadow: 0 0 8px #ff0;
+  }
+
+  .score {
+    font-size: 80px;
+    margin: 20px 0;
+    text-shadow: 0 0 10px #00ffff;
+  }
+
+  button {
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 22px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: darkred;
+  }
+
+  #controls {
+    margin-top: 40px;
+  }
+
+  #controls button {
+    background: gold;
+    color: black;
+  }
+
+  #controls button:hover {
+    background: orange;
+  }
+</style>
+</head>
+<body>
+<h1>Family Feud Scoreboard</h1>
+
+<div id="scoreboard">
+  <div class="team" id="teamA">
+    <h2>Team A</h2>
+    <div class="score" id="scoreA">221</div>
+  </div>
+
+  <div class="team" id="teamB">
+    <h2>Team B</h2>
+    <div class="score" id="scoreB">120</div>
+  </div>
+</div>
+
+</body>
+</html>
