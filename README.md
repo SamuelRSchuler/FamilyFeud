@@ -4,6 +4,7 @@ Open **index.html** in your browser by double-clicking it. No installation, serv
 
 ## Playing
 
+- Edit the team-name fields to name your teams. Names appear in award buttons and round messages; blank names fall back to Team 1/Team 2.
 - Select **Team 1** or **Team 2** to show who is playing. Switching teams does not reset the round or transfer points.
 - Click an answer card to flip it over and add its points once.
 - Click **Wrong answer** to add a strike. The overlay shows all accumulated strikes; click it to dismiss it (Escape also works).
@@ -38,4 +39,4 @@ Open **final.html** directly in your browser. Keep **final-questions.js** beside
 
 Edit `window.FEUD_FINAL_QUESTIONS` in **final-questions.js** to change prompts and the two players' answers and points. Each entry pairs one question with `player1` and `player2`, each containing `answer` and numeric `points`. The sample has five questions; add or remove entries as needed. Save and refresh to load changes.
 
-The numbered question list matches the answer rows in both player columns. Click a row once to reveal the answer and again to reveal its points and add them to the combined final-round total. Further clicks do not add points again. Enter and Space also reveal a focused row. The final-round total is independent of the main game's team totals.
+Question prompts stay in `final-questions.js` for the host and are not displayed on the final page. The numbered answer rows match the question order in that file. Click a row once to reveal the answer and again to reveal its points and add them to the combined final-round total. Further clicks do not add points again. Enter and Space also reveal a focused row. The final-round total is independent of the main game's team totals.

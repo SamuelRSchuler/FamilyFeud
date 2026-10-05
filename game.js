@@ -2,6 +2,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const questions = window.FEUD_QUESTIONS;
+  const teamName = team => $(`team-name-${team}`).value.trim() || `Team ${team + 1}`;
   let activeTeam = 0;
   const teamScores = [0, 0];
   let award = null;
@@ -27,11 +28,11 @@
       $(`play-${team}`).textContent = team === activeTeam ? 'Playing this round' : 'Select to play';
       $(`team-panel-${team}`).classList.toggle('active', team === activeTeam);
       $(`award-${team}`).disabled = award !== null || score === 0;
-      $(`award-${team}`).textContent = `Award ${score} points to Team ${team + 1}`;
+      $(`award-${team}`).textContent = `Award ${score} points to ${teamName(team)}`;
     }
     $('undo-award').disabled = award === null;
-    $('award-status').textContent = award ? `${award.points} points awarded to Team ${award.team + 1}. Undo to correct the award.` :
-      `Team ${activeTeam + 1} is playing. Award the round points to either team${strikes >= 3 ? ' to resolve the steal' : ' when the round is decided'}.`;
+    $('award-status').textContent = award ? `${award.points} points awarded to ${teamName(award.team)}. Undo to correct the award.` :
+      `${teamName(activeTeam)} is playing. Award the round points to either team${strikes >= 3 ? ' to resolve the steal' : ' when the round is decided'}.`;
     $('strikes').textContent = Array.from({length: 3}, (_, i) => i < strikes ? '✕' : '—').join(' ');
     $('strikes').setAttribute('aria-label', `${strikes} of 3 strikes`);
     $('wrong').disabled = strikes >= 3 || award !== null;
@@ -101,6 +102,7 @@
     if (event.target === $('strike-overlay')) $('strike-overlay').close();
   });
   for (let team = 0; team < 2; team++) {
+    $(`team-name-${team}`).addEventListener('input', update);
     $(`play-${team}`).addEventListener('click', () => {
       activeTeam = team;
       update();

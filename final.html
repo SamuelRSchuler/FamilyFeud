@@ -4,117 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Family Feud - Final Round (2 Player)</title>
-<style>
-  body {
-    background: radial-gradient(circle at top, #111 0%, #000 100%);
-    color: white;
-    font-family: 'Arial Black', sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-
-  h1 {
-    padding-top: 20px;
-    color: gold;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px #ff0;
-  }
-
-  #totalPoints {
-    font-size: 40px;
-    color: #00ffcc;
-    margin-top: 10px;
-    text-shadow: 0 0 8px #0ff;
-  }
-
-  #board {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin: 40px auto;
-    max-width: 1200px;
-  }
-
-  .player {
-    flex: 1;
-    max-width: 500px;
-  }
-
-  .player h2 {
-    color: #ffcc00;
-    text-shadow: 0 0 8px #ff0;
-    margin-bottom: 10px;
-  }
-
-  .row {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    align-items: center;
-    background: #0033cc;
-    border: 4px solid #fff;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px 0;
-    font-size: 26px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .row.revealed-answer {
-    background: #0077ff;
-  }
-
-  .row.revealed-points {
-    background: gold;
-    color: black;
-    font-weight: bold;
-  }
-
-  .answer {
-    text-align: left;
-  }
-
-  .points {
-    text-align: right;
-    font-size: 28px;
-  }
-
-  #controls {
-    margin-top: 30px;
-  }
-
-  button {
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 20px;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: darkred;
-  }
-
-  #instructions {
-    font-size: 18px;
-    color: #ccc;
-    margin-top: 10px;
-  }
-  #questions { max-width: 900px; margin: 20px auto; text-align: left; padding: 0 24px 0 48px; line-height: 1.8; }
-  #error { color: #ffaaaa; }
-  @media (max-width: 650px) { #board { flex-direction: column; gap: 10px; margin: 20px 12px; } .player { max-width: none; } }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<h1>FINAL ROUND</h1>
-<div id="totalPoints">Total: 0</div>
+<body class="final-page">
+<header><h1>Family <em>Feud</em></h1><span class="eyebrow">FINAL ROUND</span></header>
+<main>
+<section class="dashboard"><div class="score"><span class="label">FINAL ROUND POINTS</span><strong id="totalPoints" aria-live="polite">0</strong></div></section>
 <div id="instructions">Click once to reveal the answer, again to reveal the points.</div>
 
-<ol id="questions" aria-label="Final round questions"></ol>
 <p id="error" role="alert" hidden></p>
 <div id="board">
   <div class="player" id="player1">
@@ -125,6 +22,7 @@
   </div>
 </div>
 
+</main>
 <script src="final-questions.js"></script>
 <script>
   const questions = window.FEUD_FINAL_QUESTIONS;
@@ -197,15 +95,10 @@
 
 
   function updateTotal() {
-    totalDisplay.textContent = `Total: ${total}`;
+    totalDisplay.textContent = total;
   }
 
   if (valid) {
-    questions.forEach(item => {
-      const prompt = document.createElement("li");
-      prompt.textContent = item.question;
-      document.getElementById("questions").appendChild(prompt);
-    });
     renderBoard();
   } else {
     const error = document.getElementById("error");
