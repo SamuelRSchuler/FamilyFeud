@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Family Feud - Final Round (2 Player)</title>
 <style>
   body {
@@ -103,6 +104,9 @@
     color: #ccc;
     margin-top: 10px;
   }
+  #questions { max-width: 900px; margin: 20px auto; text-align: left; padding: 0 24px 0 48px; line-height: 1.8; }
+  #error { color: #ffaaaa; }
+  @media (max-width: 650px) { #board { flex-direction: column; gap: 10px; margin: 20px 12px; } .player { max-width: none; } }
 </style>
 </head>
 <body>
@@ -110,6 +114,8 @@
 <div id="totalPoints">Total: 0</div>
 <div id="instructions">Click once to reveal the answer, again to reveal the points.</div>
 
+<ol id="questions" aria-label="Final round questions"></ol>
+<p id="error" role="alert" hidden></p>
 <div id="board">
   <div class="player" id="player1">
     <h2>Player 1</h2>
@@ -119,23 +125,14 @@
   </div>
 </div>
 
+<script src="final-questions.js"></script>
 <script>
-  // Example answers for each player
-  const player1Answers = [
-    { answer: "Food", points: 42 },
-    { answer: "Dishes", points: 38 },
-    { answer: "Blood", points: 49 },
-    { answer: "Library", points: 37 },
-    { answer: "Banana", points: 45 }
-  ];
-
-  const player2Answers = [
-    { answer: "Drinks", points: 35 },
-    { answer: "Laundry", points: 30 },
-    { answer: "Garlic", points: 40 },
-    { answer: "Church", points: 32 },
-    { answer: "Lemon", points: 28 }
-  ];
+  const questions = window.FEUD_FINAL_QUESTIONS;
+  const validAnswer = item => item && typeof item.answer === "string" && item.answer.trim() &&
+    Number.isFinite(item.points) && item.points >= 0;
+  const valid = Array.isArray(questions) && questions.length > 0 && questions.every(item =>
+    item && typeof item.question === "string" && item.question.trim() &&
+    validAnswer(item.player1) && validAnswer(item.player2));
 
   let total = 0;
   const totalDisplay = document.getElementById("totalPoints");
@@ -149,17 +146,26 @@
     answers.forEach((item, i) => {
       const row = document.createElement("div");
       row.className = "row";
+      row.setAttribute("role", "button");
+      row.tabIndex = 0;
+      row.setAttribute("aria-label", `Question ${i + 1}: reveal answer`);
       row.dataset.state = "hidden"; // hidden → answer → points
       row.dataset.answer = item.answer;
       row.dataset.points = item.points;
       row.dataset.prefix = prefix;
 
       row.innerHTML = `
-        <div class="answer">---</div>
+        <div class="answer">${i + 1}. ---</div>
         <div class="points">---</div>
       `;
 
       row.onclick = () => advanceReveal(row);
+      row.onkeydown = event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          advanceReveal(row);
+        }
+      };
       container.appendChild(row);
     });
   }
@@ -169,10 +175,12 @@
     if (state === "hidden") {
       row.querySelector(".answer").textContent = row.dataset.answer;
       row.dataset.state = "answer";
+      row.setAttribute("aria-label", `${row.dataset.answer}: reveal points`);
       row.classList.add("revealed-answer");
     } else if (state === "answer") {
       row.querySelector(".points").textContent = row.dataset.points;
       row.dataset.state = "points";
+      row.setAttribute("aria-label", `${row.dataset.answer}, ${row.dataset.points} points`);
       row.classList.remove("revealed-answer");
       row.classList.add("revealed-points");
       total += Number(row.dataset.points);
@@ -183,8 +191,8 @@
   function renderBoard() {
     total = 0;
     updateTotal();
-    renderPlayer(p1Container, player1Answers, "p1");
-    renderPlayer(p2Container, player2Answers, "p2");
+    renderPlayer(p1Container, questions.map(item => item.player1), "p1");
+    renderPlayer(p2Container, questions.map(item => item.player2), "p2");
   }
 
 
@@ -192,8 +200,18 @@
     totalDisplay.textContent = `Total: ${total}`;
   }
 
-  // Initialize
-  renderBoard();
+  if (valid) {
+    questions.forEach(item => {
+      const prompt = document.createElement("li");
+      prompt.textContent = item.question;
+      document.getElementById("questions").appendChild(prompt);
+    });
+    renderBoard();
+  } else {
+    const error = document.getElementById("error");
+    error.hidden = false;
+    error.textContent = "Check final-questions.js: each entry needs a question and player1/player2 answers with nonnegative numeric points.";
+  }
 </script>
 </body>
 </html>

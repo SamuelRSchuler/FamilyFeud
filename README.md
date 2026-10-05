@@ -31,3 +31,11 @@ Open **questions.js** in a text editor. Edit or add entries in `window.FEUD_QUES
 Separate question entries and answer entries with commas. Each question supports 1–12 answers. Points must be nonnegative numbers. The samples are illustrative, not actual survey results. Save the file and refresh the browser to load your edits. The game uses a regular script file so custom questions work directly from a local folder without fetching files or needing a server.
 
 Game progress lasts until you refresh or close the page. Round points and the two team totals are separate. Refreshing or closing the page clears all scores. Undo an incorrect award before leaving or resetting its round; undo is only available in the current round.
+
+## Final round
+
+Open **final.html** directly in your browser. Keep **final-questions.js** beside it. This file is separate from the regular-round `questions.js`.
+
+Edit `window.FEUD_FINAL_QUESTIONS` in **final-questions.js** to change prompts and the two players' answers and points. Each entry pairs one question with `player1` and `player2`, each containing `answer` and numeric `points`. The sample has five questions; add or remove entries as needed. Save and refresh to load changes.
+
+The numbered question list matches the answer rows in both player columns. Click a row once to reveal the answer and again to reveal its points and add them to the combined final-round total. Further clicks do not add points again. Enter and Space also reveal a focused row. The final-round total is independent of the main game's team totals.
