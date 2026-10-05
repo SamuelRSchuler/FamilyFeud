@@ -2,6 +2,9 @@
 (() => {
   const $ = id => document.getElementById(id);
   const questions = window.FEUD_QUESTIONS;
+  let activeTeam = 0;
+  const teamScores = [0, 0];
+  let award = null;
   let current = 0;
   let score = 0;
   let strikes = 0;
@@ -13,19 +16,31 @@
   if (!valid) {
     $('error').hidden = false;
     $('error').textContent = 'Check questions.js: add at least one question with 1–12 answers, each with text and nonnegative numeric points.';
-    for (const id of ['wrong', 'reset', 'next', 'question-select']) $(id).disabled = true;
+    for (const id of ['wrong', 'reset', 'next', 'question-select', 'play-0', 'play-1', 'award-0', 'award-1', 'reset-game']) $(id).disabled = true;
     return;
   }
   function update() {
     $('score').textContent = score;
+    for (let team = 0; team < 2; team++) {
+      $(`team-score-${team}`).textContent = teamScores[team];
+      $(`play-${team}`).setAttribute('aria-pressed', String(team === activeTeam));
+      $(`play-${team}`).textContent = team === activeTeam ? 'Playing this round' : 'Select to play';
+      $(`team-panel-${team}`).classList.toggle('active', team === activeTeam);
+      $(`award-${team}`).disabled = award !== null || score === 0;
+      $(`award-${team}`).textContent = `Award ${score} points to Team ${team + 1}`;
+    }
+    $('undo-award').disabled = award === null;
+    $('award-status').textContent = award ? `${award.points} points awarded to Team ${award.team + 1}. Undo to correct the award.` :
+      `Team ${activeTeam + 1} is playing. Award the round points to either team${strikes >= 3 ? ' to resolve the steal' : ' when the round is decided'}.`;
     $('strikes').textContent = Array.from({length: 3}, (_, i) => i < strikes ? '✕' : '—').join(' ');
     $('strikes').setAttribute('aria-label', `${strikes} of 3 strikes`);
-    $('wrong').disabled = strikes >= 3;
-    $('status').textContent = strikes >= 3 ? 'Three strikes! Score is locked. Reveal the remaining answers or start a new round.' :
+    $('wrong').disabled = strikes >= 3 || award !== null;
+    $('status').textContent = award ? 'Round awarded. Reveal remaining answers or start the next question.' : strikes >= 3 ? 'Three strikes! Score is locked. Reveal the remaining answers or start a new round.' :
       revealed.size === questions[current].answers.length ? 'All answers revealed! Ready for the next question?' : 'Click a card to reveal an answer.';
   }
   function loadRound(index) {
     current = index;
+    award = null;
     score = 0;
     strikes = 0;
     revealed = new Set();
@@ -56,9 +71,9 @@
       card.addEventListener('click', () => {
         if (revealed.has(index)) return;
         revealed.add(index);
-        if (strikes < 3) score += answer.points;
+        if (strikes < 3 && award === null) score += answer.points;
         card.classList.add('revealed');
-        card.setAttribute('aria-label', `${answer.text}, ${answer.points} points${strikes >= 3 ? ', score locked' : ''}`);
+        card.setAttribute('aria-label', `${answer.text}, ${answer.points} points${strikes >= 3 || award !== null ? ', score locked' : ''}`);
         card.setAttribute('aria-disabled', 'true');
         update();
       });
@@ -73,7 +88,7 @@
     $('question-select').append(option);
   });
   $('wrong').addEventListener('click', () => {
-    if (strikes >= 3) return;
+    if (strikes >= 3 || award !== null) return;
     strikes++;
     update();
     $('overlay-xs').textContent = Array(strikes).fill('✕').join(' ');
@@ -84,6 +99,30 @@
   $('dismiss-strikes').addEventListener('click', () => $('strike-overlay').close());
   $('strike-overlay').addEventListener('click', event => {
     if (event.target === $('strike-overlay')) $('strike-overlay').close();
+  });
+  for (let team = 0; team < 2; team++) {
+    $(`play-${team}`).addEventListener('click', () => {
+      activeTeam = team;
+      update();
+    });
+    $(`award-${team}`).addEventListener('click', () => {
+      if (award !== null || score === 0) return;
+      award = { team, points: score };
+      teamScores[team] += score;
+      update();
+    });
+  }
+  $('undo-award').addEventListener('click', () => {
+    if (award === null) return;
+    teamScores[award.team] -= award.points;
+    award = null;
+    update();
+  });
+  $('reset-game').addEventListener('click', () => {
+    if (!window.confirm('Reset both team totals and return to the first question?')) return;
+    teamScores.fill(0);
+    activeTeam = 0;
+    loadRound(0);
   });
   $('reset').addEventListener('click', () => loadRound(current));
   $('next').addEventListener('click', () => loadRound((current + 1) % questions.length));
